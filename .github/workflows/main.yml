@@ -12,7 +12,7 @@ jobs:
     - name: Init new repo in dist folder and commit generated files
       run: |
         cd tools
-        echo "tools-test.canonn.tech" > CNAME
+        echo "tools.canonn.tech" > CNAME
         git init
         git add -A
         git config --local user.email "action@github.com"
