@@ -11,7 +11,7 @@ jobs:
 
     - name: Init new repo in dist folder and commit generated files
       run: |
-        cd Source
+        cd tools
         echo "tools-test.canonn.tech" > CNAME
         git init
         git add -A
@@ -25,4 +25,4 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: gh-pages
         force: true
-        directory: ./Source
+        directory: ./tools
