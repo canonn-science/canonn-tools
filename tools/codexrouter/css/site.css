@@ -1,0 +1,143 @@
+/**
+ *  Bootstrap Changes
+ */
+.navbar {
+    border-radius: 0;
+}
+
+
+.section {
+    background-color: #263238 !important;
+    width: 100%;
+}
+
+.row { 
+    margin: auto;
+    padding:15px;
+    color: black !important;
+}
+
+
+input#glyph-code{
+    margin:auto;
+}
+
+
+
+div.iconography{
+    position: relative;
+    height: 128px;
+    width: 128px;    
+    margin-top:50px;
+}
+
+
+div.iconography img{
+    position: absolute;
+    top: 50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    height: 128px;
+    width: 128px;
+    opacity: 0.8;
+}
+
+
+.btn img{
+    height:64px;
+    width:64px;
+}
+
+.selected{
+    background-color: #ef7b04 !important;
+}
+
+.panel{
+    background-color: #cfd8dc !important;
+}
+
+.panel-body {
+    padding:0;
+    background-color: #cfd8dc !important;
+}
+
+.panel-heading {
+    background-color: #222 !important;
+    color: #fff !important;
+    border-bottom: 2px solid #353535 !important;
+}
+
+div {
+    border-radius: 0px !important;
+    border-color: transparent !important;
+}
+
+.canonn-heading {
+    font-size: 48px;
+    font-family: 'Open Sans';
+    font-weight: 300;
+    background-color: #263238;
+    padding:15px !important;
+    margin:0px;    
+}
+
+.canonn-thumbnail img {
+    margin: auto;
+    display: block;
+    max-height: 200px;
+}
+
+p {
+    font-size: 24px;
+    font-family: 'Open Sans';
+    font-weight: 100;
+}
+
+h1 {
+    color: #ef7b04;
+    display: block;
+    padding:15px;
+    margin:0;
+    width: 100%;
+}
+
+h2 {
+    color: black;
+    display: block;
+    margin:0;
+    width: 100%;
+}
+
+h4 {
+    font-size: 18px;
+    color: #888;
+}
+
+
+h5 {
+    font-size: 18px;
+    color: #888;
+}
+
+h6 {
+    font-size: 18px;
+    color: #FFF;
+}
+
+body {
+    margin: 0 !important;
+    padding: 0px !important;
+    background: #fff !important;
+    background: #37474f !important;
+    color: #ffffff !important;
+    font-family: 'Open Sans', sans-serif !important;
+    font-weight: 100 !important;
+}
+
+.list-group-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    color: black !important;
+    font-weight: bold;
+}
+

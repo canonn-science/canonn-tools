@@ -1,0 +1,541 @@
+<!DOCTYPE HTML>
+<!--
+	Eventually by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+
+<head>
+	<title>System Signal Records</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.min.js"></script>
+	<script src="EliteDangerousRegionMap/RegionMap.js"></script>
+	<script src="pretty-print-json.js"></script>
+	<link href="css/pretty-print-json.css" type="text/css" rel="stylesheet" />
+	<link href="css/typeahead.css" type="text/css" rel="stylesheet" />
+	<link href="https://unpkg.com/tabulator-tables@4.3.0/dist/css/tabulator_midnight.min.css" rel="stylesheet">
+	<script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.3.0/dist/js/tabulator.min.js"></script>
+</head>
+
+<body class="is-preload">
+
+	<!-- Header -->
+	<header id="header">
+		<h1>System Signals</h1>
+		<p>Enter a system name to view signals recorded by Canonn field researchers</p>
+	</header>
+
+
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+	<script src="https://code.highcharts.com/modules/export-data.js"></script>
+	<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+	<script src="https://code.highcharts.com/highcharts-more.js"></script>
+
+
+
+
+
+	<!-- Signup Form -->
+	<script>
+
+		var signals = {}
+		var entries = {}
+
+		var getParams = function (url) {
+			var params = {};
+			var parser = document.createElement('a');
+			parser.href = url;
+			var query = parser.search.substring(1);
+			var vars = query.split('&');
+			for (var i = 0; i < vars.length; i++) {
+				var pair = vars[i].split('=');
+				params[pair[0]] = decodeURIComponent(pair[1]);
+			}
+			return params;
+		};
+
+		var params = getParams(window.location.href);
+
+		$(document).ready(function () {
+			if (params.system) {
+				//$(#form).submitForm();
+
+
+				var system = decodeURIComponent(params.system).replace(/\+/g, " ")
+
+				doDisplay(system);
+
+				$("#system").val(system);
+
+			}
+
+		});
+
+
+
+
+		function updateSignals(json) {
+			//console.log(json);
+			window.signals = json.signals
+
+
+			var table = new Tabulator("#results-table", {
+				data: json.signals,           //load row data from array
+				layout: "fitColumns",      //fit columns to width of table
+				responsiveLayout: "hide",  //hide columns that dont fit on the table
+				tooltips: true,            //show tool tips on cells
+				addRowPos: "top",          //when adding a new row, add it to the top of the table
+				pagination: "local",       //paginate the data
+				paginationSize: 50,         //allow 7 rows per page of data
+				movableColumns: true,      //allow column order to be changed
+				resizableRows: true,       //allow row order to be changed
+
+				columns: [                 //define the table columns
+
+					{ title: "Body", field: "body", headerFilter: true },
+					{ title: "Signal Type", field: "type", headerFilter: true },
+					{ title: "Signal Count", field: "count", headerFilter: true },
+				],
+			});
+		}
+		function updateEntries(json) {
+			window.entries = json.signals
+
+			var table = new Tabulator("#entries-table", {
+				data: json.signals,           //load row data from array
+				layout: "fitColumns",      //fit columns to width of table
+				responsiveLayout: "hide",  //hide columns that dont fit on the table
+				tooltips: true,            //show tool tips on cells
+				addRowPos: "top",          //when adding a new row, add it to the top of the table
+				pagination: "local",       //paginate the data
+				paginationSize: 50,         //allow 7 rows per page of data
+				movableColumns: true,      //allow column order to be changed
+				resizableRows: true,       //allow row order to be changed
+
+				columns: [                 //define the table columns
+
+					{ title: "Body", field: "body", headerFilter: true },
+					{ title: "Signal#", field: "id", headerFilter: true },
+					{ title: "Category", field: "hud_category", headerFilter: true },
+					{ title: "Species", field: "english_name", headerFilter: true },
+				],
+
+			});
+		}
+
+		var rawbiostats = []
+
+		function getStats(url, resolvePromise) {
+			let fetchDataFromApi = async (url, resolvePromise) => {
+				let response = await fetch(url);
+				let result = await response.json();
+				rawbiostats = result
+				resolvePromise();
+				return result;
+			}
+			fetchDataFromApi(url, resolvePromise)
+		}
+
+		var promiseData = new Promise(function (resolve, reject) {
+			getStats('https://europe-west2-canonn-api-236217.cloudfunctions.net/get_bio_stats', resolve);
+		});
+
+		function doDisplay(system) {
+			Promise.all([promiseData]).then(function () {
+				getSignalEntries(system)
+				getSignals(system)
+				getBodies(system)
+				$("#edsm").html('<div id="result"><blockquote class="edsm-embed" lang="en" data-value="' + system + '"><a href="https://www.edsm.net/" target="_blank">EDSM - Elite Dangerous Star Map</a></blockquote></div>');
+				var script = document.createElement("script");
+				script.type = "text/javascript";
+				script.src = "https://www.edsm.net/js/embed.js";
+				document.getElementsByTagName("head")[0].appendChild(script);
+			});
+		}
+
+		function getSignalEntries(system) {
+			$("#result").text("Searching")
+
+			fetch(encodeURI('https://us-central1-canonn-api-236217.cloudfunctions.net/getSignalEntries?system=' + system))
+				.then(response => response.json())
+				.then(json => updateEntries(json))
+				;
+		}
+		function getSignals(system) {
+			$("#result").text("Searching")
+
+			fetch(encodeURI('https://us-central1-canonn-api-236217.cloudfunctions.net/getSignals?system=' + system))
+				.then(response => response.json())
+				.then(json => updateSignals(json))
+				;
+		}
+		function getBodies(system) {
+			fetch(encodeURI('https://www.edsm.net/api-system-v1/bodies?systemName=' + system))
+				.then(response => response.json())
+				.then(json => updateChart(json))
+				;
+		}
+
+		function submitform() {
+			var data = $(this).serializeArray();
+			doDecode($('input:text').val(), $("#data").val());
+			return false;
+		};
+	</script>
+	<div>
+		<form id="form" method="GET">
+			<div id="search-container">
+				<input type="text" placeholder="System Name eg. Merope" name="system" id="system" class="typeahead"
+					style="z-index: 10;">
+			</div>
+			<input type="submit">
+		</form>
+		<p>
+		<div id="edsm"></div>
+		<p></p>
+		</p>
+
+		<script>
+			function updateChart(edsm) {
+				Array.prototype.unique = function () {
+					var a = this.concat();
+					for (var i = 0; i < a.length; ++i) {
+						for (var j = i + 1; j < a.length; ++j) {
+							if (a[i] === a[j])
+								a.splice(j--, 1);
+						}
+					}
+
+					return a;
+				};
+
+				$(".highcharts-description").text(`
+			This chart shows the range of gravity and temperature of each of the different classes of biology, represented by rectangles.
+			There are seperate ranges for each body type therefore some biology classes will have multiple rectangles one foreach body type.
+			`)
+
+				var opacity = 0.1;
+				var primary = 'Unknown'
+				var system = edsm.name
+				var regiondata = findRegionForBoxel(edsm.id64)
+				var region = regiondata.region.id
+				var regionname = regiondata.region.name
+				//console.log(region)
+
+
+				planets = []
+
+				bodies = edsm.bodies
+				bodies.forEach((body, i, a) => {
+					if (body.type == "Star" & body.isMainStar) {
+						primary = body.subType
+					}
+					if (body.type == 'Planet' & body.isLandable) {
+						planet = body.name.replace(system, '');
+						bodyType = body.subType
+						planets.push(
+							{
+								name: 'Planet' + planet + ' - (' + bodyType + ')',
+								color: 'black',
+								marker: { symbol: 'circle' },
+								showInLegend: false,
+								data: [[body.surfaceTemperature, body.gravity]],
+								bodyType: bodyType,
+								volcanism: body.volcanismType
+							}
+						);
+					}
+				});
+
+				colours = {
+					'apsites': "red",
+					'bmsites': "brown",
+					'cssites': "green",
+					'fgsites': "orange",
+					'twsites': "purple",
+					'btsites': "blue"
+				}
+
+				var biostats = []
+				rawbiostats.forEach(function (stat) {
+					biostats.push({
+						name: stat.name + ' (' + stat.body + ')',
+						type: 'polygon',
+						data: [[stat.mint, stat.ming], [stat.maxt, stat.ming], [stat.maxt, stat.maxg], [stat.mint, stat.maxg]],
+						showInLegend: true,
+						marker: { enabled: false },
+						color: colours[stat.type],
+						opacity: 0.2,
+						bodyType: stat.body,
+						stars: stat.stars,
+						regions: stat.regions,
+						volcanism: stat.volcanism
+					})
+				});
+
+				var biolist = []
+
+				function get_signals(body) {
+					retval = ''
+					window.signals.forEach(function (signal) {
+						console.log('Signals ' + signal.body + '  ' + body)
+						if (signal.body.trim() == body.trim() & signal.type == 'Biology') {
+							console.log('Found Signals ' + signal.body + '  ' + body)
+							retval = '<br>' + signal.count + ' Biological Signals Found'
+						}
+					});
+					return retval
+				}
+
+				function get_entries(body) {
+					bodyentries = {}
+					window.entries.forEach(function (entry) {
+
+						if (entry.body.trim() == body.trim() & entry.hud_category == 'Biology') {
+							bodyentries[entry.name] = entry.english_name
+						}
+					});
+					var retval = "<br>"
+					for (var key in bodyentries) {
+						// check if the property/key is defined in the object itself, not in parent
+						if (bodyentries.hasOwnProperty(key)) {
+							console.log(bodyentries[key]);
+							retval = retval + bodyentries[key] + '<br>'
+						}
+					}
+					return retval
+				}
+
+				function match_conditions(region, primary, planet, codex) {
+					temp = planet.data[0][0];
+					gravity = planet.data[0][1]
+					ming = codex.data[0][1]
+					maxg = codex.data[2][1]
+					mint = codex.data[0][0]
+					maxt = codex.data[1][0]
+
+					if (codex.volcanism == 'N') {
+						volcanismmatch = true
+					} else {
+						if (planet.volcanism == 'No volcanism') {
+							volcanismmatch = false
+						} else {
+							volcanismmatch = true
+						}
+					}
+
+					bodymatch = (codex.bodyType == planet.bodyType)
+					starmatch = (codex.stars.includes(primary))
+					gravitymatch = (ming < gravity & maxg > gravity)
+					tempmatch = (mint < temp & maxt > temp)
+					regionmatch = (codex.regions.includes(region))
+
+					return (bodymatch & starmatch & gravitymatch & tempmatch & regionmatch & volcanismmatch)
+				}
+
+				planets.forEach((planet, i, a) => {
+					temp = planet.data[0][0];
+					gravity = planet.data[0][1]
+
+					var newarray = biostats.filter(element => (match_conditions(region, primary, planet, element)))
+					biolist = biolist.concat(newarray).unique();
+				});
+
+				seriesdata = biolist.concat(planets)
+
+				Highcharts.chart('container', {
+					chart: {
+						type: 'scatter',
+						zoomType: 'xy'
+					},
+					title: {
+						text: 'Gravity Vs Temperature Ranges for Biological Signals'
+					},
+					subtitle: {
+						text: "<b>System:</b> " + system + " <b>Region:</b> " + regionname + " <b>Primary Star:</b> " + primary
+					},
+					xAxis: {
+						title: {
+							enabled: true,
+							text: 'Surface Temperature (K)'
+						},
+						startOnTick: true,
+						endOnTick: true,
+						showLastLabel: true
+					},
+					yAxis: {
+						title: {
+							text: 'Gravity (G)'
+						}
+					},
+					tooltip: {
+						formatter: function () {
+							if (this.series.type == 'polygon') {
+								return '<b>' + this.series.name + '</b>' +
+									'<br>Temperature Range: ' +
+									this.series.options.data[0][0] +
+									' - ' +
+									this.series.options.data[1][0] + ' (K)<br>Gravity Range: ' +
+									this.series.options.data[0][1] +
+									' - ' +
+									this.series.options.data[2][1] +
+									' (G)'
+							} else {
+								planet = this.series.name.split("-", 1)[0].replace("Planet ", "").trim()
+								console.log(planet)
+
+								return '<b>' + this.series.name + '</b><br>Temperature: ' + this.point.x + ' (K)<br>Gravity: ' + this.point.y + ' (G)' + get_entries(planet) + get_signals(planet)
+
+							}
+
+							//return this.series.name + '<br>Oh come on' + this.series.options.data[0][0]
+						}
+						//headerFormat: '<b>{series.name}</b><br>{series.xData[0]}',
+						//pointFormat: 'Min Temperature {this.data[0][0]} K</b><br>Gravity {series.type} G'
+					},
+					plotOptions: {
+						polygon: {
+
+							events: {
+								click: function (e) {
+									var polygon = e.currentTarget;
+									this.showInLegend = true
+									this.options.showInLegend = true
+									this.chart.legend.render()
+									this.hide()
+
+								},
+								/*legendItemClick: function () {
+									//var visibility = this.visible ? 'visible' : 'hidden';
+		
+									this.showInLegend = false
+									this.render()
+								}*/
+							}
+						},
+						scatter: {
+							marker: {
+								radius: 5,
+								states: {
+									hover: {
+										enabled: true,
+										lineColor: 'rgb(100,100,100)'
+									}
+								}
+							},
+							states: {
+								hover: {
+									marker: {
+										enabled: false
+									}
+								}
+							},
+							tooltip: {
+								headerFormat: '<b>{series.name}</b><br>',
+								pointFormat: 'Temperature {point.x} K</b><br>Gravity {point.y} G'
+							}
+						}
+					},
+					/*
+			"High metal content world":
+				{"ming": 0.07489301192, "maxg": 1.361246451, "mint": 191, "maxt": 230},
+			"Icy body": 
+				{"ming": 0.02514043344, "maxg": 0.1830008426, "mint": 27, "maxt": 133,"volcanism": True},
+			"Rocky Ice world": 
+				{"ming": 0.05009637503, "maxg": 0.1541432719, "mint": 98, "maxt": 168,"volcanism": True},
+			"Rocky body": 
+				{"ming": 0.04557216926, "maxg": 0.2123876965, "mint": 90, "maxt": 247,"volcanism": True},
+					*/
+					series: seriesdata
+				});
+
+			}
+		</script>
+		<div style="overflow: visible">
+			<figure class="highcharts-figure">
+				<div id="container"></div>
+				<p class="highcharts-description">
+				</p>
+			</figure>
+
+			<div id="results-table" style="overflow: visible">&nbsp;</div>
+			</p>
+			<p>
+			<div id="entries-table">&nbsp;</div>
+		</div>
+		<br />
+
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		</P>
+
+	</div><!-- /.container -->
+
+	<script>
+		// Instantiate the Bloodhound suggestion engine
+		const movies = new Bloodhound({
+			datumTokenizer: datum => Bloodhound.tokenizers.whitespace(datum.value),
+			queryTokenizer: Bloodhound.tokenizers.whitespace,
+			/*remote: {
+				//url: 'https://us-central1-canonn-api-236217.cloudfunctions.net/systems?q=%QUERY',
+				//url: 'https://spansh.co.uk/api/systems/field_values/system_names?q=%QUERY',
+				url: 'https://spansh.co.uk/api/systems/field_values/system_names?q=%QUERY',
+				// Map the remote source JSON array to a JavaScript object array
+				dataType: 'jsonp',
+				filter: movies => $.map(movies.results, function (movie) {
+					console.log(movie)
+					return { value: movie }
+				})
+			}*/
+			remote: {
+				dataType: 'jsonp',
+				url: 'https://spansh.co.uk/api/systems/field_values/system_names?q=%QUERY',
+				// Map the remote source JSON array to a JavaScript object array
+				filter: movies => $.map(movies.values, function (movie) {
+					//console.log(movie)
+					return { value: movie }
+				})
+			}
+		});
+
+		// Initialize the Bloodhound suggestion engine
+		movies.initialize();
+
+		// Instantiate the Typeahead UI
+		$('.typeahead').typeahead(null, {
+			displayKey: 'value',
+			minLength: 3,
+			source: movies.ttAdapter()
+
+		});
+	</script>
+	</div>
+	<!-- Footer -->
+	<footer id="footer">
+		<ul class="icons">
+			<li><a href="http://twitter.com/CanonnResearch" class="icon brands fa-twitter"><span
+						class="label">Twitter</span></a></li>
+			<li><a href="https://github.com/canonn-science/Aurvandil/blob/master/README.md"
+					class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+		</ul>
+		<ul class="copyright">
+			<li>&copy; Canonn Interstellar Research.</li>
+			<li>Credits: <a href="http://html5up.net">HTML5 UP</a></li>
+		</ul>
+	</footer>
+
+	<!-- Scripts -->
+	<script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
