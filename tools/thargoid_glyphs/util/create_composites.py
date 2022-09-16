@@ -2,7 +2,7 @@ import os, re
 from PIL import Image
 from fnmatch import fnmatch
 
-innerRingMax=9
+innerRingMax=10
 
 def createComposite(source, dest,name):
 	nameNoExt = os.path.splitext(name)[0];
