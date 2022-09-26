@@ -44,6 +44,6 @@ A web page to display signal data captured by the EDMC-Canonn plugin
 - [Previous Repo](https://github.com/canonn-science/Valknut)
 - [Codebase](./tools/thargoid_glyphs)
 
-Select the Inner Ring component, and then choose the corresponding Outer Ring component to step through all the various combinations until you get the mix you want.
+Select the Inner Ring component, and then choose the corresponding Outer Ring component to step through all the various combinations until you get the mix you want. 
 
 Copy from the Image field to paste a direct link to the chosen combination wherever you want to refer to and display that glyph combination, on the forums or in a Discord chat.
