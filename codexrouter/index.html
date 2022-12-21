@@ -1,0 +1,297 @@
+<!DOCTYPE HTML>
+<!--
+	Eventually by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+
+<head>
+	<title>Codex Route Plotter</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.min.js"></script>
+	<script src="pretty-print-json.js"></script>
+	<link href="css/pretty-print-json.css" type="text/css" rel="stylesheet" />
+	<link href="css/typeahead.css" type="text/css" rel="stylesheet" />
+	<link href="https://unpkg.com/tabulator-tables@4.3.0/dist/css/tabulator_midnight.min.css" rel="stylesheet">
+	<script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.3.0/dist/js/tabulator.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+</head>
+
+<body class="is-preload">
+
+	<!-- Header -->
+	<header id="header">
+		<h1>Codex Route Plotter</h1>
+		<p>
+			This will show you all the sites of special scientific interest between two systems. Pick a range in light
+			years that you are prepared to detour from a straight line between the two systems
+		</p>
+	</header>
+
+	<!-- Signup Form -->
+	<script>
+		/**
+		 * Get the URL parameters
+		 * source: https://css-tricks.com/snippets/javascript/get-url-variables/
+		 * @param  {String} url The URL
+		 * @return {Object}     The URL parameters
+		 */
+		var getParams = function (url) {
+			var params = {};
+			var parser = document.createElement('a');
+			parser.href = url;
+			var query = parser.search.substring(1);
+			var vars = query.split('&');
+			for (var i = 0; i < vars.length; i++) {
+				var pair = vars[i].split('=');
+				params[pair[0]] = decodeURIComponent(pair[1]);
+			}
+			return params;
+		};
+
+		const API_ENDPOINT = `https://us-central1-canonn-api-236217.cloudfunctions.net/get_codex_route`;
+		const API_LIMIT = 10000;
+
+		const codex = axios.create({
+			baseURL: API_ENDPOINT,
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json',
+			},
+		});
+
+
+
+		const getSites = async (startSystem, endSystem, jumpRange) => {
+			let records = [];
+			let keepGoing = true;
+			let API_START = 0;
+			while (keepGoing) {
+				let response = await reqSites(API_START, startSystem, endSystem, jumpRange);
+				await records.push.apply(records, response.data);
+				API_START += API_LIMIT;
+				if (response.data.length < API_LIMIT) {
+					keepGoing = false;
+					return records;
+				}
+			}
+		};
+
+		const reqSites = async (API_START, startSystem, endSystem, jumpRange) => {
+
+			let payload = await codex({
+				url: `?startSystem=${startSystem}&endSystem=${endSystem}&jumpRange=${jumpRange}&limit=${API_LIMIT}&offset=${API_START}`,
+				method: 'get'
+			});
+			console.log("fetching data")
+			return payload;
+		};
+
+		var codexData = []
+		var gmpData = []
+
+		const fetchCodexData = async function (sSystem, eSystem, jRange, resolvePromise) {
+			codexData = await getSites(sSystem, eSystem, jRange);
+			resolvePromise();
+		}
+
+		const parseGmp = function (url, resolvePromise) {
+			let fetchDataFromApi = async (url, resolvePromise) => {
+				let response = await fetch(url);
+				let result = await response.json();
+				gmpData = result
+				resolvePromise();
+				return result;
+			}
+			fetchDataFromApi(url, resolvePromise)
+
+		}
+
+		function getUrlParameter(name) {
+			name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+			var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+			var results = regex.exec(location.href);
+			return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+		};
+
+		var p1 = new Promise(function (resolve, reject) {
+			startSystem = getUrlParameter("startSystem")
+			endSystem = getUrlParameter("endSystem")
+			jumpRange = getUrlParameter("jumpRange")
+			fetchCodexData(startSystem, endSystem, jumpRange, resolve)
+		});
+
+		var p2 = new Promise(function (resolve, reject) {
+			startSystem = getUrlParameter("startSystem")
+			endSystem = getUrlParameter("endSystem")
+			jumpRange = getUrlParameter("jumpRange")
+			parseGmp('https://us-central1-canonn-api-236217.cloudfunctions.net/get_gmp_route?startSystem=' + startSystem + '&endSystem=' + endSystem + '&jumpRange=' + jumpRange, resolve)
+		});
+
+		var params = getParams(window.location.href);
+		$(document).ready(function () {
+			if (params.startSystem && params.endSystem && params.jumpRange) {
+
+
+
+				var startSystem = decodeURIComponent(params.startSystem).replace(/\+/g, " ")
+				var endSystem = decodeURIComponent(params.endSystem).replace(/\+/g, " ")
+				var jumpRange = decodeURIComponent(params.jumpRange).replace(/\+/g, " ")
+
+				Promise.all([p1, p2]).then(function () {
+					updateScreen(codexData.concat(gmpData), startSystem, endSystem, jumpRange)
+				});
+
+				$("#startSystem").val(startSystem);
+				$("#endSystem").val(endSystem);
+				$("#jumpRange").val(jumpRange);
+			}
+
+		});
+
+
+		function candidatesTable(json, startSystem, endSystem) {
+			var table = new Tabulator("#results-table", {
+				data: json,           //load row data from array
+				layout: "fitColumns",      //fit columns to width of table
+				responsiveLayout: "hide",  //hide columns that dont fit on the table
+				tooltips: true,            //show tool tips on cells
+				addRowPos: "top",          //when adding a new row, add it to the top of the table
+				pagination: "local",       //paginate the data
+				paginationSize: 50,         //allow 7 rows per page of data
+				movableColumns: true,      //allow column order to be changed
+				resizableRows: true,       //allow row order to be changed
+
+
+				columns: [                 //define the table columns
+					{ title: "System", field: "system", headerFilter: true },
+					{ title: "Name", field: "english_name", headerFilter: true },
+					{ title: "Category", field: "hud_category", headerFilter: true },
+					{
+						title: "Distance from " + startSystem, field: "startSystem.jump",
+						align: "right",
+						formatter: "money", formatterParams: {
+							decimal: ".",
+							thousand: ",",
+							//symbol:"",
+						}
+					},
+					{
+						title: "Distance from " + endSystem, field: "endSystem.jump",
+						align: "right",
+						formatter: "money", formatterParams: {
+							decimal: ".",
+							thousand: ",",
+							//symbol:"",
+						}
+					},
+				],
+				initialSort: [
+					{ column: "startSystem.jump", dir: "asc" }, //sort by this first
+				],
+			});
+		}
+
+		function updateScreen(json, startSystem, endSystem, jumpRange) {
+			candidatesTable(json, startSystem, endSystem);
+			$("#map-url").html('<a href="https://map.canonn.tech/route_data.html?startSystem=' + startSystem + '&endSystem=' + endSystem + '&jumpRange=' + jumpRange + '" target="_blank">View data on a 3D map</a>')
+
+		}
+
+
+
+		function doDecode(startSystem, endSystem, jumpRange) {
+			$("#results-table").text("Searching")
+
+			fetch(encodeURI('https://us-central1-canonn-api-236217.cloudfunctions.net/full_codex_route-gmp?startSystem=' + startSystem + '&endSystem=' + endSystem + '&jumpRange=' + jumpRange))
+				.then(response => response.json())
+				.then(json => updateScreen(json, startSystem, endSystem, jumpRange))
+				;
+		}
+		function submitform() {
+			var data = $(this).serializeArray();
+			doDecode($('input:text').val(), $("#data").val());
+			return false;
+		};
+	</script>
+
+
+
+	<form id="form" method="GET">
+		<div id="search-container">
+			<input type="text" placeholder="Start System" name="startSystem" id="startSystem" class="typeahead">
+			<input type="text" placeholder="End System" name="endSystem" id="endSystem" class="typeahead">
+			<input type="text" placeholder="Maximum number of light years to deviate from the ideal route"
+				name="jumpRange" id="jumpRange">
+		</div>
+		<input type="submit">
+	</form>
+
+	<script>
+		// Instantiate the Bloodhound suggestion engine
+		const movies = new Bloodhound({
+			datumTokenizer: datum => Bloodhound.tokenizers.whitespace(datum.value),
+			queryTokenizer: Bloodhound.tokenizers.whitespace,
+
+			remote: {
+				dataType: 'jsonp',
+				url: 'https://spansh.co.uk/api/systems/field_values/system_names?q=%QUERY',
+				// Map the remote source JSON array to a JavaScript object array
+				filter: movies => $.map(movies.values, function (movie) {
+					//console.log(movie)
+					return { value: movie }
+				})
+			}
+		});
+
+		// Initialize the Bloodhound suggestion engine
+		movies.initialize();
+
+		// Instantiate the Typeahead UI
+		$('.typeahead').typeahead(null, {
+			displayKey: 'value',
+			minLength: 3,
+			source: movies.ttAdapter()
+
+		});
+	</script>
+
+	<div id="map-url">&nbsp;</div>
+	<p>
+	<div id="results-table">&nbsp;</div>
+	</p>
+	<p>
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+	</P>
+
+	</div><!-- /.container -->
+	<!-- Footer -->
+	<footer id="footer">
+		<ul class="icons">
+			<li><a href="http://twitter.com/CanonnResearch" class="icon brands fa-twitter"><span
+						class="label">Twitter</span></a></li>
+			<li><a href="https://github.com/canonn-science/Aurvandil/blob/master/README.md"
+					class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+		</ul>
+		<ul class="copyright">
+			<li>&copy; Canonn Interstellar Research.</li>
+			<li>Credits: <a href="http://html5up.net">HTML5 UP</a></li>
+		</ul>
+	</footer>
+
+	<!-- Scripts -->
+	<script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
