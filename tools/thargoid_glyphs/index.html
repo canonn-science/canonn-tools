@@ -1,282 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="favicon.ico">
 
-    <title>Thargoid Glyphs</title>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="favicon.ico">
 
-    <!-- Bootstrap core CSS -->
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <title>Thargoid Glyphs</title>
 
-    <!-- Custom styles for this template -->
-    <link href="css/site.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-  </head>
+  <!-- Bootstrap core CSS -->
+  <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="css/site.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+</head>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-102148507-4"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
+  function gtag() { dataLayer.push(arguments); }
   gtag('js', new Date());
 
   gtag('config', 'UA-102148507-4');
-</script>  
+</script>
 
-  <body>
+<body>
 
-    <h1 class="text-center canonn-heading">Thargoid Glyphs</h1>
+  <h1 class="text-center canonn-heading">Thargoid Glyphs</h1>
 
-    <div class="container">
+  <div class="container">
 
-      <div class="panel">
-        
-        <div class="row">
-          <div class="col-4">
-              <div class="row">
-                <div class="col-12 iconography">
-                  <img src="images/symbols/core.png" id="core">
-                  <img src="images/symbols/1.png" id="inner-ring">
-                  <img src="images/symbols/1A.png" id="outer-ring">
-                </div>
-              </div>  
+    <div class="panel">
 
-              <div class="row">
-                <div class="col-3 text-right">
-                  Code:
-                </div>
-                <div class="col-9">
-                  <input type="text" id="glyph-code" class="user-selectable" size="15" value="" readonly>
-                </div>
-              </div>  
-
-              <div class="row">
-                <div class="col-3 text-right">
-                  Image:
-                </div>
-                <div class="col-9">
-                  <input type="text" id="glyph-composite"  class="user-selectable" size="15" value="" readonly>
-                </div>
-              </div>  
-
-              <div class="row">
-                <div class="col-12 text-center">
-                  <a id="glyph-route-map" href="https://map.canonn.tech/thargoids-combo.html?Sigil=2C-1">View on Thargoid Map</a>
-                </div>
-              </div>  
+      <div class="row">
+        <div class="col-4">
+          <div class="row">
+            <div class="col-12 iconography">
+              <img src="images/symbols/core.png" id="core">
+              <img src="images/symbols/1.png" id="inner-ring">
+              <img src="images/symbols/1A.png" id="outer-ring">
+            </div>
           </div>
 
-          <div class="col-8">
-            <div class="row">
-              <div class="col-12">
-                <h2>Inner Ring</h2>
-              </div>
+          <div class="row">
+            <div class="col-3 text-right">
+              Code:
             </div>
-            <div class="row">
-              <div class="col-12 ring-group canonn-ring-inner">
-                  <button type="button" class="btn btn-secondary" value="1"><img src="images/symbols/1.png"></button>
-                  <button type="button" class="btn btn-secondary" value="2"><img src="images/symbols/2.png"></button>
-                  <button type="button" class="btn btn-secondary" value="3"><img src="images/symbols/3.png"></button>
-
-                  <button type="button" class="btn btn-secondary" value="4"><img src="images/symbols/4.png"></button>
-                  <button type="button" class="btn btn-secondary" value="5"><img src="images/symbols/5.png"></button>
-                  <button type="button" class="btn btn-secondary" value="6"><img src="images/symbols/6.png"></button>
-              </div>
+            <div class="col-9">
+              <input type="text" id="glyph-code" class="user-selectable" size="15" value="" readonly>
             </div>
-            <div class="row">
-              <div class="col-12 ring-group canonn-ring-inner">
-                  <button type="button" class="btn btn-secondary" value="7"><img src="images/symbols/7.png"></button>
-                  <button type="button" class="btn btn-secondary" value="8"><img src="images/symbols/8.png"></button>
-                  <button type="button" class="btn btn-secondary" value="9"><img src="images/symbols/9.png"></button>
-                  <button type="button" class="btn btn-secondary" value="10"><img src="images/symbols/10.png"></button>
-              </div>
+          </div>
+
+          <div class="row">
+            <div class="col-3 text-right">
+              Image:
             </div>
-
-            <div class="row">
-              <div class="col-12">
-                <h2>Outer Ring</h2>
-              </div>
+            <div class="col-9">
+              <input type="text" id="glyph-composite" class="user-selectable" size="15" value="" readonly>
             </div>
-            <div class="row">
-              <div class="col-12 ring-group canonn-ring-outer">
-                  <button type="button" class="btn btn-secondary" value="1A"><img src="images/symbols/1A.png"></button>
-                  <button type="button" class="btn btn-secondary" value="1B"><img src="images/symbols/1B.png"></button>
-                  <button type="button" class="btn btn-secondary" value="1C"><img src="images/symbols/1C.png"></button>
-                  <button type="button" class="btn btn-secondary" value="1D"><img src="images/symbols/1D.png"></button>
-              </div>
-            </div>  
-            <div class="row">
-              <div class="col-12 ring-group canonn-ring-outer">
-                  <button type="button" class="btn btn-secondary" value="2A"><img src="images/symbols/2A.png"></button>
-                  <button type="button" class="btn btn-secondary" value="2B"><img src="images/symbols/2B.png"></button>
-                  <button type="button" class="btn btn-secondary" value="2C"><img src="images/symbols/2C.png"></button>
-                  <button type="button" class="btn btn-secondary" value="2D"><img src="images/symbols/2D.png"></button>
-                  <button type="button" class="btn btn-secondary" value="2E"><img src="images/symbols/2E.png"></button>
-              </div>
-            </div>    
+          </div>
 
-            <div class="row">
-              <div class="col-12 ring-group canonn-ring-outer">
-                  <button type="button" class="btn btn-secondary" value="3A"><img src="images/symbols/3A.png"></button>
-                  <button type="button" class="btn btn-secondary" value="3B"><img src="images/symbols/3B.png"></button>
-              </div>
-            </div>   
-
-            <div class="row">
-              <div class="col-12 ring-group canonn-ring-outer">
-                  <button type="button" class="btn btn-secondary" value="4A"><img src="images/symbols/4A.png"></button>
-                  <button type="button" class="btn btn-secondary" value="4B"><img src="images/symbols/4B.png"></button>
-                  <button type="button" class="btn btn-secondary" value="4C"><img src="images/symbols/4C.png"></button>
-                  <button type="button" class="btn btn-secondary" value="4D"><img src="images/symbols/4D.png"></button>
-                  <button type="button" class="btn btn-secondary" value="4E"><img src="images/symbols/4E.png"></button>
-                  <button type="button" class="btn btn-secondary" value="4F"><img src="images/symbols/4F.png"></button>
-                  
-                  
-              </div>
+          <div class="row">
+            <div class="col-12 text-center">
+              <a id="glyph-route-map" href="https://map.canonn.tech/thargoids-combo.html?Sigil=2C-1">View on Thargoid
+                Map</a>
             </div>
-
-            <div class="row">
-              <div class="col-12 ring-group canonn-ring-outer">
-                  <button type="button" class="btn btn-secondary" value="5A"><img src="images/symbols/5A.png"></button>
-              </div>
-            </div>
-
-            
-
-            <div class="row">
-              <div class="col-12 ring-group canonn-ring-outer">
-                  <button type="button" class="btn btn-secondary" value="7A"><img src="images/symbols/7A.png"></button>
-              </div>
-            </div>
-
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-12">
-            <p>
-            Symbol Version 4.5 updated 16/09/2022
-            </p>
-            <p>
-            Select the Inner Ring component, and then choose the corresponding Outer Ring component to step through all the various combinations until you get the mix you want.
-            </p>
-
-            <p>Copy from the Image field to paste a direct link to the chosen combination wherever you want to refer to and display that glyph combination, on the forums or in a Discord chat.</p>
-
-            <p>This tool will continue to be extended and further information added as more analysis becomes available.</p>
-
-            <p>This work would not have been possible without the pioneering research of CMDR Orodir, CMDR Olivia Vespera and other commanders <a target="blank" href="https://forums.frontier.co.uk/threads/Xenobiology-study-of-Thargoid-Ship-Logograms-Compendium.379844/">documented here</a></p>
+        <div class="col-8">
+          <div class="row">
+            <div class="col-12">
+              <h2>Inner Ring</h2>
+            </div>
           </div>
+          <div class="row">
+            <div class="col-12 ring-group canonn-ring-inner">
+              <button type="button" class="btn btn-secondary" value="1"><img src="images/symbols/1.png"></button>
+              <button type="button" class="btn btn-secondary" value="2"><img src="images/symbols/2.png"></button>
+              <button type="button" class="btn btn-secondary" value="3"><img src="images/symbols/3.png"></button>
+
+              <button type="button" class="btn btn-secondary" value="4"><img src="images/symbols/4.png"></button>
+              <button type="button" class="btn btn-secondary" value="5"><img src="images/symbols/5.png"></button>
+              <button type="button" class="btn btn-secondary" value="6"><img src="images/symbols/6.png"></button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 ring-group canonn-ring-inner">
+              <button type="button" class="btn btn-secondary" value="7"><img src="images/symbols/7.png"></button>
+              <button type="button" class="btn btn-secondary" value="8"><img src="images/symbols/8.png"></button>
+              <button type="button" class="btn btn-secondary" value="9"><img src="images/symbols/9.png"></button>
+              <button type="button" class="btn btn-secondary" value="10"><img src="images/symbols/10.png"></button>
+              <button type="button" class="btn btn-secondary" value="11"><img src="images/symbols/11.png"></button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <h2>Outer Ring</h2>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 ring-group canonn-ring-outer">
+              <button type="button" class="btn btn-secondary" value="1A"><img src="images/symbols/1A.png"></button>
+              <button type="button" class="btn btn-secondary" value="1B"><img src="images/symbols/1B.png"></button>
+              <button type="button" class="btn btn-secondary" value="1C"><img src="images/symbols/1C.png"></button>
+              <button type="button" class="btn btn-secondary" value="1D"><img src="images/symbols/1D.png"></button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 ring-group canonn-ring-outer">
+              <button type="button" class="btn btn-secondary" value="2A"><img src="images/symbols/2A.png"></button>
+              <button type="button" class="btn btn-secondary" value="2B"><img src="images/symbols/2B.png"></button>
+              <button type="button" class="btn btn-secondary" value="2C"><img src="images/symbols/2C.png"></button>
+              <button type="button" class="btn btn-secondary" value="2D"><img src="images/symbols/2D.png"></button>
+              <button type="button" class="btn btn-secondary" value="2E"><img src="images/symbols/2E.png"></button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12 ring-group canonn-ring-outer">
+              <button type="button" class="btn btn-secondary" value="3A"><img src="images/symbols/3A.png"></button>
+              <button type="button" class="btn btn-secondary" value="3B"><img src="images/symbols/3B.png"></button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12 ring-group canonn-ring-outer">
+              <button type="button" class="btn btn-secondary" value="4A"><img src="images/symbols/4A.png"></button>
+              <button type="button" class="btn btn-secondary" value="4B"><img src="images/symbols/4B.png"></button>
+              <button type="button" class="btn btn-secondary" value="4C"><img src="images/symbols/4C.png"></button>
+              <button type="button" class="btn btn-secondary" value="4D"><img src="images/symbols/4D.png"></button>
+              <button type="button" class="btn btn-secondary" value="4E"><img src="images/symbols/4E.png"></button>
+              <button type="button" class="btn btn-secondary" value="4F"><img src="images/symbols/4F.png"></button>
+
+
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12 ring-group canonn-ring-outer">
+              <button type="button" class="btn btn-secondary" value="5A"><img src="images/symbols/5A.png"></button>
+            </div>
+          </div>
+
+
+
+          <div class="row">
+            <div class="col-12 ring-group canonn-ring-outer">
+              <button type="button" class="btn btn-secondary" value="7A"><img src="images/symbols/7A.png"></button>
+            </div>
+          </div>
+
         </div>
-              
       </div>
 
-    </div><!-- /.container -->
+      <div class="row">
+        <div class="col-12">
+          <p>
+            Symbol Version 4.5 updated 16/09/2022
+          </p>
+          <p>
+            Select the Inner Ring component, and then choose the corresponding Outer Ring component to step through all
+            the various combinations until you get the mix you want.
+          </p>
+
+          <p>Copy from the Image field to paste a direct link to the chosen combination wherever you want to refer to
+            and display that glyph combination, on the forums or in a Discord chat.</p>
+
+          <p>This tool will continue to be extended and further information added as more analysis becomes available.
+          </p>
+
+          <p>This work would not have been possible without the pioneering research of CMDR Orodir, CMDR Olivia Vespera
+            and other commanders <a target="blank"
+              href="https://forums.frontier.co.uk/threads/Xenobiology-study-of-Thargoid-Ship-Logograms-Compendium.379844/">documented
+              here</a></p>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- /.container -->
 
 
 
 
-    <!-- Bootstrap core JavaScript
+  <!-- Bootstrap core JavaScript
     ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+    integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+    crossorigin="anonymous"></script>
 
-    <script src="bootstrap/js/bootstrap.min.js"></script>
+  <script src="bootstrap/js/bootstrap.min.js"></script>
 
 
-    <script>
-      window.thargoidGlyph = {
-        inner:'1',
-        outer:'1A'
-      }
+  <script>
+    window.thargoidGlyph = {
+      inner: '1',
+      outer: '1A'
+    }
 
-      function updateSelection(){
-        window.thargoidGlyph.inner = window.thargoidGlyph.inner.toUpperCase();
-        window.thargoidGlyph.outer = window.thargoidGlyph.outer.toUpperCase();
-        
-        //Update symbols
-        $('#inner-ring').attr('src','images/symbols/' + window.thargoidGlyph.inner + '.png');
-        $('#outer-ring').attr('src','images/symbols/' + window.thargoidGlyph.outer + '.png');
-        
+    function updateSelection() {
+      window.thargoidGlyph.inner = window.thargoidGlyph.inner.toUpperCase();
+      window.thargoidGlyph.outer = window.thargoidGlyph.outer.toUpperCase();
 
-        //Generate the code
-        var glyphCode = window.thargoidGlyph.outer + '-' + window.thargoidGlyph.inner;
-        $('#glyph-code').val(glyphCode);
+      //Update symbols
+      $('#inner-ring').attr('src', 'images/symbols/' + window.thargoidGlyph.inner + '.png');
+      $('#outer-ring').attr('src', 'images/symbols/' + window.thargoidGlyph.outer + '.png');
 
-        //Generate the composite including identifying the path of the given site
-        var sitePath = window.location.href;
-        sitePath = sitePath.substring(0, sitePath.lastIndexOf("/")+1);
-        $('#glyph-composite').val(sitePath + 'images/composite/' + glyphCode + '.png');
 
-        //Update the Thargoid Map
-        $('#glyph-route-map').attr("href", "https://map.canonn.tech/thargoids-combo.html?Sigil=" + encodeURI(glyphCode));
+      //Generate the code
+      var glyphCode = window.thargoidGlyph.outer + '-' + window.thargoidGlyph.inner;
+      $('#glyph-code').val(glyphCode);
 
-        //Update the window URI so it can be copied/pasted
-        window.location.hash = glyphCode;
-      }
+      //Generate the composite including identifying the path of the given site
+      var sitePath = window.location.href;
+      sitePath = sitePath.substring(0, sitePath.lastIndexOf("/") + 1);
+      $('#glyph-composite').val(sitePath + 'images/composite/' + glyphCode + '.png');
 
-      function processNavPath(){
-        //Check for navigation
-        var navData = String(window.location.hash || '').replace('#','').split('-');
-        window.thargoidGlyph.outer = String(navData[0] || '1A');
-        window.thargoidGlyph.inner = String(navData[1] || '1');
+      //Update the Thargoid Map
+      $('#glyph-route-map').attr("href", "https://map.canonn.tech/thargoids-combo.html?Sigil=" + encodeURI(glyphCode));
 
-        //Select the specific items
-        setRingSelectedItem('outer',window.thargoidGlyph.outer);
-        setRingSelectedItem('inner',window.thargoidGlyph.inner);
-        
-        //Update the display
+      //Update the window URI so it can be copied/pasted
+      window.location.hash = glyphCode;
+    }
+
+    function processNavPath() {
+      //Check for navigation
+      var navData = String(window.location.hash || '').replace('#', '').split('-');
+      window.thargoidGlyph.outer = String(navData[0] || '1A');
+      window.thargoidGlyph.inner = String(navData[1] || '1');
+
+      //Select the specific items
+      setRingSelectedItem('outer', window.thargoidGlyph.outer);
+      setRingSelectedItem('inner', window.thargoidGlyph.inner);
+
+      //Update the display
+      updateSelection();
+
+    }
+
+    function setRingSelectedItem(ring, value) {
+      //Clear the status of other elements
+      $('.canonn-ring-' + ring + ' .btn').removeClass("selected");
+      $('.canonn-ring-' + ring + ' .btn[value=' + value + ']').addClass("selected");
+
+      //Store teh value        
+      window.thargoidGlyph[ring] = value;
+    }
+
+
+    $(document).ready(function () {
+      $(".ring-group > .btn").click(function () {
+        //Get class from the parent
+        if ($(this).parent().hasClass('canonn-ring-inner')) {
+          //Clear the status of other elements
+          setRingSelectedItem('inner', $(this).val());
+        }
+
+        if ($(this).parent().hasClass('canonn-ring-outer')) {
+          //Clear the status of other elements
+          setRingSelectedItem('outer', $(this).val());
+        }
+
+
+        //update the display
         updateSelection();
-
-      }
-
-      function setRingSelectedItem(ring,value){
-        //Clear the status of other elements
-        $('.canonn-ring-' + ring +' .btn').removeClass("selected");
-        $('.canonn-ring-' + ring +' .btn[value=' + value + ']').addClass("selected");
-
-        //Store teh value        
-        window.thargoidGlyph[ring] = value;
-      }
-
-
-      $(document).ready(function(){
-        $(".ring-group > .btn").click(function(){
-            //Get class from the parent
-            if($(this).parent().hasClass('canonn-ring-inner')){
-              //Clear the status of other elements
-              setRingSelectedItem('inner',$(this).val());             
-            }
-
-            if($(this).parent().hasClass('canonn-ring-outer')){
-              //Clear the status of other elements
-              setRingSelectedItem('outer',$(this).val());             
-            }
-
-
-            //update the display
-            updateSelection();
-        });
-
-        $(window).on('hashchange', function() {
-          //Process any #1A-3 tags
-          processNavPath();
-        });
-
-        //Handle user copy/selection of the glyph codes
-        $('.user-selectable').on('contextmenu',function(){
-          $(this).select();
-        });
-
-        //Initial processing
-        processNavPath();
-
       });
-    
-    </script>
-  </body>
+
+      $(window).on('hashchange', function () {
+        //Process any #1A-3 tags
+        processNavPath();
+      });
+
+      //Handle user copy/selection of the glyph codes
+      $('.user-selectable').on('contextmenu', function () {
+        $(this).select();
+      });
+
+      //Initial processing
+      processNavPath();
+
+    });
+
+  </script>
+</body>
+
 </html>
