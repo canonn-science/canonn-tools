@@ -194,9 +194,9 @@
 		}
 		function doDecode(origin, data) {
 			$("#result").text("Searching")
-			console.log(encodeURI('https://us-central1-canonn-api-236217.cloudfunctions.net/linkDecode?origin=' + origin + '&message=' + data))
+			console.log(encodeURI('https://us-central1-canonn-api-236217.cloudfunctions.net/query/linkDecode?origin=' + origin + '&message=' + data))
 			console.log("ping");
-			fetch(encodeURI('https://us-central1-canonn-api-236217.cloudfunctions.net/linkDecode?origin=' + origin + '&message=' + data))
+			fetch(encodeURI('https://us-central1-canonn-api-236217.cloudfunctions.net/query/linkDecode?origin=' + origin + '&message=' + data))
 				.then(response => response.json())
 				.then(json => updateScreen(json))
 				;
