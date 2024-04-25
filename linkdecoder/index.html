@@ -1,0 +1,344 @@
+<!DOCTYPE HTML>
+<!--
+	Eventually by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+
+<head>
+	<title>Thargoid Link Decoder</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.min.js"></script>
+	<script src="pretty-print-json.js"></script>
+	<link href="css/pretty-print-json.css" type="text/css" rel="stylesheet" />
+	<link href="css/typeahead.css" type="text/css" rel="stylesheet" />
+	<link href="https://unpkg.com/tabulator-tables@4.3.0/dist/css/tabulator_midnight.min.css" rel="stylesheet">
+	<script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.3.0/dist/js/tabulator.min.js"></script>
+</head>
+
+<body class="is-preload">
+
+	<!-- Header -->
+	<header id="header">
+		<h1>Thargoid Link Decoder</h1>
+		<p>Please enter one transcript of the Thargoid message in the box</p>
+	</header>
+
+	<!-- Signup Form -->
+	<script>
+		/**
+		 * Get the URL parameters
+		 * source: https://css-tricks.com/snippets/javascript/get-url-variables/
+		 * @param  {String} url The URL
+		 * @return {Object}     The URL parameters
+		 */
+		var getParams = function (url) {
+			var params = {};
+			var parser = document.createElement('a');
+			parser.href = url;
+			var query = parser.search.substring(1);
+			var vars = query.split('&');
+			for (var i = 0; i < vars.length; i++) {
+				var pair = vars[i].split('=');
+				params[pair[0]] = decodeURIComponent(pair[1]);
+			}
+			return params;
+		};
+		var params = getParams(window.location.href);
+		$(document).ready(function () {
+			if (params.origin && params.data) {
+				//$(#form).submitForm();
+
+				var origin = decodeURIComponent(params.origin).replace(/\+/g, " ")
+				var data = decodeURIComponent(params.data).replace(/\+/g, " ")
+				console.log(origin);
+				console.log(data)
+				doDecode(origin, data);
+				$('input:text').val(origin);
+				$("#data").val(data);
+			}
+
+		});
+
+		function decodesTable(json) {
+			var decodes = json.decodes
+
+			var table = new Tabulator("#decodes-table", {
+				data: decodes,           //load row data from array
+				layout: "fitColumns",      //fit columns to width of table
+				responsiveLayout: "collapse",  //hide columns that dont fit on the table
+				tooltips: true,            //show tool   tips on cells
+				addRowPos: "top",          //when adding a new row, add it to the top of the table
+				history: true,             //allow undo and redo actions on the table
+				pagination: "local",       //paginate the data
+				paginationSize: 20,         //allow 7 rows per page of data
+				movableColumns: false,      //allow column order to be changed
+				resizableRows: false,       //allow row order to be changed                       
+				responsiveLayoutCollapseStartOpen: false, //hide collpased columns
+				columns: [                 //define the table columns
+					//{formatter:"responsiveCollapse", width:30, minWidth:30, align:"center", resizable:false, headerSort:false, minWidth: "100"},
+					{ title: "System", field: "system", headerTooltip: "The system this part of the message refers to", responsive: 0, resizable: false, minWidth: "100" },
+					{ title: "Numerator", field: "numerator", align: "left", sorter: "number", headerTooltip: "The number the first part of the message decodes to", responsive: 0, minWidth: "100" },
+					{ title: "Denominator", field: "denominator", align: "left", sorter: "number", headerTooltip: "The number the second part of the message decodes to", responsive: 0, minWidth: "100" },
+					{ title: "Distance Ly", field: "lightyears", align: "left", sorter: "number", headerTooltip: "The distance from the system according to the decoded message", responsive: 0, minWidth: "30" },
+					{ title: "Validity", field: "status", align: "left", headerTooltip: "A read cross means you transposed your message incorrectly", formatter: "tickCross", sorter: "boolean", editor: false, responsive: 0 },
+					{ title: "Denominator Check", field: "denominatorStatus", align: "left", headerTooltip: "The denominator should be a fraction of 1000" },
+					{ title: "Precision Check", field: "precisionStatus", align: "left", headerTooltip: "The division should have no more than three decimal places" },
+				],
+			});
+			$("#decodes-table .tabulator-footer").hide();
+		}
+
+		function coordsTable(json) {
+
+			var v = json.trilateration.coords;
+
+			var coords = [
+				{ x1: v[0][0], y1: v[0][1], z1: v[0][2], x2: v[1][0], y2: v[1][1], z2: v[1][2], spread: json.trilateration.spread },
+			]
+
+			var table = new Tabulator("#coords-table", {
+				data: coords,           //load row data from array
+				layout: "fitColumns",      //fit columns to width of table
+				responsiveLayout: "hide",  //hide columns that dont fit on the table
+				tooltips: false,            //show tool   tips on cells
+				addRowPos: "top",          //when adding a new row, add it to the top of the table
+				history: true,             //allow undo and redo actions on the table
+				pagination: "local",       //paginate the data
+				paginationSize: 20,         //allow 7 rows per page of data                        
+				movableColumns: false,      //allow column order to be changed
+				resizableRows: false,       //allow row order to be changed                       
+				columns: [
+					{ title: "Spread", field: "spread", align: "left", sorter: "number" },
+					{
+						title: "Trilateration 1",
+						columns: [                 //define the table columns
+							//{formatter:"responsiveCollapse", width:30, minWidth:30, align:"center", resizable:false, headerSort:false, minWidth: "100"},
+
+							{ title: "x", field: "x1", align: "left", sorter: "number" },
+							{ title: "y", field: "y1", align: "left", sorter: "number" },
+							{ title: "z", field: "z1", align: "left", sorter: "number" },
+
+						]
+					},
+					{
+						title: "Trilateration 2",
+						columns: [                 //define the table columns
+							//{formatter:"responsiveCollapse", width:30, minWidth:30, align:"center", resizable:false, headerSort:false, minWidth: "100"},
+
+							{ title: "x", field: "x2", align: "left", sorter: "number" },
+							{ title: "y", field: "y2", align: "left", sorter: "number" },
+							{ title: "z", field: "z2", align: "left", sorter: "number" },
+
+						]
+					},
+
+				]
+
+			});
+			$("#coords-table .tabulator-footer").hide();
+		}
+
+
+		function candidatesTable(json) {
+			var table = new Tabulator("#results-table", {
+				data: json.candidates,           //load row data from array
+				layout: "fitColumns",      //fit columns to width of table
+				responsiveLayout: "hide",  //hide columns that dont fit on the table
+				tooltips: true,            //show tool tips on cells
+				addRowPos: "top",          //when adding a new row, add it to the top of the table
+				history: true,             //allow undo and redo actions on the table
+				pagination: "local",       //paginate the data
+				paginationSize: 20,         //allow 7 rows per page of data
+				movableColumns: true,      //allow column order to be changed
+				resizableRows: true,       //allow row order to be changed
+				initialSort: [             //set the initial sort order of the data
+					{ column: "matches", dir: "desc" },
+					{ column: "control", dir: "asc" },
+				],
+				columns: [                 //define the table columns
+					{ title: "Name", field: "name" },
+					{ title: "Error Ly", field: "error", align: "left", sorter: "number" },
+					{ title: "Control Ly", field: "control", align: "left", sorter: "number" },
+					{ title: "Matches", field: "matches", formatter: "star", align: "center", width: 100, editor: false, formatterParams: { stars: 3 }, sorter: "number" },
+
+				],
+			});
+		}
+
+		function updateScreen(json) {
+			console.log(json.result);
+			$("#result").text(json.Result.name);
+
+			if (json.Result.name != 'n/a') {
+				$("#result").html('<div id="result"><p>Result: ' + json.Result.name + ' ' + json.Result.result + '</p><blockquote class="edsm-embed" lang="en" data-value="' + json.Result.name + '"><a href="https://www.edsm.net/" target="_blank">EDSM - Elite Dangerous Star Map</a></blockquote></div>');
+				var script = document.createElement("script");
+				script.type = "text/javascript";
+				script.src = "https://www.edsm.net/js/embed.js";
+				document.getElementsByTagName("head")[0].appendChild(script);
+
+				decodesTable(json);
+				coordsTable(json);
+				candidatesTable(json);
+			} else {
+				$("#result").html('<div id="result"><p>Result: ' + json.Result.result + '</p></div>');
+				decodesTable(json);
+			}
+
+			//$('#json-renderer').html(prettyPrintJson.toHtml(json));
+
+		}
+		function doDecode(origin, data) {
+			$("#result").text("Searching")
+			console.log(encodeURI('https://us-central1-canonn-api-236217.cloudfunctions.net/query/linkDecode?origin=' + origin + '&message=' + data))
+			console.log("ping");
+			fetch(encodeURI('https://us-central1-canonn-api-236217.cloudfunctions.net/query/linkDecode?origin=' + origin + '&message=' + data))
+				.then(response => response.json())
+				.then(json => updateScreen(json))
+				;
+		}
+		function submitform() {
+			var data = $(this).serializeArray();
+			doDecode($('input:text').val(), $("#data").val());
+			return false;
+		};
+	</script>
+
+	<div>
+
+		<form id="form" method="GET">
+
+			<input type="text" placeholder="Name of the system that yielded the audio used to trigger the UL"
+				name="origin" id="origin" class="typeahead">
+			<br>
+
+			<textarea id="data"
+				placeholder="Transcribe the binary transmission, for example:&#10;&#10;010 011 101 | 001 111 101 000&#10;011 111 | 001 111 101 000&#10;011 000 | 011001 &#10; &#10; You can use either '010 100' or 'hlh lhh' syntax."
+				name="data" id="data"></textarea><br />
+
+			<br>
+			<input type="submit" value="Search" />
+
+
+		</form>
+
+		<p>
+		<div id="result">&nbsp;</div>
+		</p>
+		<p>
+		<div id="decodes-table"></div>
+		<p>
+		<div id="coords-table"></div>
+		</p>
+
+		<div id="results-table"></div>
+
+		<pre id="json-renderer"></pre>
+
+		</p>
+		<div class="row">
+			<div class="col-12">
+				<p>
+					The thargoid link message is a puzzle that provides us with the distances of an unknown system
+					relative
+					to three known systems. By a process of triangulation we are able to identify a pair of 3D
+					coordinates
+					one of which is the location of the unknown system.
+				</p>
+				<p>
+					However the link messages are calculated with a precision of three decimal places which means that
+					the
+					distances are not accurate enough to give us the precise location so we must search through a list
+					of
+					known stars to identify stars that are close to the calculated coordinates. Each candidate system
+					has a
+					error value measured in light years.
+				</p>
+				<p>
+					Once we have a list of candidate systems, we can run the calculation is reverse to give us the
+					distances
+					using the same precision used by the Thargoids to calculate their message. If we have identified the
+					correct system then the recalculated distances will match the distances given in the message. We use
+					the
+					recalulated distances to generate a pair of coordinates and then compare these to the original
+					decoded
+					coordinates to give us a control value measured in ly. An exact match on the system would have a
+					control
+					value of exctly 0ly.
+				</p>
+				<p>
+					We also check to see if any of the recalculated distances match the original distances and this
+					gives us
+					a match value between 1 and 3. If we get a control value or zero and match value of 3 then we can be
+					certain that we have the correct coordinates.
+				</p>
+				<p>
+				</p>
+			</div>
+		</div>
+
+	</div>
+	<script>
+		// Instantiate the Bloodhound suggestion engine
+		const movies = new Bloodhound({
+			datumTokenizer: datum => Bloodhound.tokenizers.whitespace(datum.value),
+			queryTokenizer: Bloodhound.tokenizers.whitespace,
+			/*remote: {
+				//url: 'https://us-central1-canonn-api-236217.cloudfunctions.net/systems?q=%QUERY',
+				//url: 'https://spansh.co.uk/api/systems/field_values/system_names?q=%QUERY',
+				url: 'https://spansh.co.uk/api/systems/field_values/system_names?q=%QUERY',
+				// Map the remote source JSON array to a JavaScript object array
+				dataType: 'jsonp',
+				filter: movies => $.map(movies.results, function (movie) {
+					console.log(movie)
+					return { value: movie }
+				})
+			}*/
+			remote: {
+				dataType: 'jsonp',
+				url: 'https://spansh.co.uk/api/systems/field_values/system_names?q=%QUERY',
+				// Map the remote source JSON array to a JavaScript object array
+				filter: movies => $.map(movies.values, function (movie) {
+					//console.log(movie)
+					return { value: movie }
+				})
+			}
+		});
+
+		// Initialize the Bloodhound suggestion engine
+		movies.initialize();
+
+		// Instantiate the Typeahead UI
+		$('.typeahead').typeahead(null, {
+			displayKey: 'value',
+			minLength: 3,
+			source: movies.ttAdapter()
+
+		});
+	</script>
+	</div><!-- /.container -->
+	</div>
+	<!-- Footer -->
+	<footer id="footer">
+		<ul class="icons">
+			<li><a href="http://twitter.com/CanonnResearch" class="icon brands fa-twitter"><span
+						class="label">Twitter</span></a></li>
+			<li><a href="https://github.com/canonn-science/Aurvandil/blob/master/README.md"
+					class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+		</ul>
+		<ul class="copyright">
+			<li>&copy; Canonn Interstellar Research.</li>
+			<li>Credits: <a href="http://html5up.net">HTML5 UP</a></li>
+		</ul>
+	</footer>
+
+	<!-- Scripts -->
+	<script src="assets/js/main.js"></script>
+
+</body>
+
+</html>

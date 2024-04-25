@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redirecting...</title>
+<script>
+    // Get the entire query string
+    const queryString = window.location.search;
+
+    // If there are parameters in the query string, redirect to the specified URL
+    if (queryString) {
+        window.location.href = `https://canonn-science.github.io/canonn-signals/index.html${queryString}`;
+    } else {
+        // If no parameters are provided, redirect to the default URL
+        window.location.href = 'https://canonn-science.github.io/canonn-signals/index.html';
+    }
+</script>
+</head>
+<body>
+    <p>If you are not redirected automatically, <a href="https://canonn-science.github.io/canonn-signals/index.html">click here</a>.</p>
+</body>
+</html>
